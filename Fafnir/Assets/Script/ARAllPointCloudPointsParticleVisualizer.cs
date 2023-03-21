@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine.UIElements;
 using UnityEngine.XR.ARSubsystems;
 
@@ -65,6 +66,18 @@ namespace UnityEngine.XR.ARFoundation
             m_Particles[index].remainingLifetime = 1f;
         }
 
+        //red
+        void SetParticlered(int index, Vector3 position)
+        {
+            //var main = m_ParticleSystem.main;
+            //main.startColor = Color.clear;
+            m_Particles[index].startColor = Color.red;
+            //m_Particles[index].startColor = Color.clear;
+            m_Particles[index].startSize = m_ParticleSystem.main.startSize.constant;
+            m_Particles[index].position = position;
+            m_Particles[index].remainingLifetime = 1f;
+        }
+
 
         void RenderPoints()
         {
@@ -105,57 +118,69 @@ namespace UnityEngine.XR.ARFoundation
                 }
                 case Mode.CurrentFrame:
                 {
-                    // Only draw the particles in the current frame
-                    /*for (int i = 0; i < positions.Length; ++i)
-                    {
-                        SetParticleOff(i, positions[i]);
-                    }*/
+                    StopRender();
 
-                    //StopRender();
-                    ParticleRender();
+                    // Only draw the particles in the current frame
+                    for (int i = 0; i < positions.Length; ++i)
+                    {
+                        //added for clear
+                        SetParticlered(i, positions[i]);
+                        //SetParticlePosition(i, positions[i]);
+                    }
+                    
+
+                    
+                    //ParticleRender();
+                    
                     /*
                     int particleIndex = 0;
                     foreach (var kvp in m_Points)
                     {
-                        SetParticleOff(particleIndex++, kvp.Value);
+                        SetParticleRed(particleIndex++, kvp.Value);
                     }
+                    
                     */
-
                     break;
                 }
             }
 
             // Remove any existing particles by setting remainingLifetime
             // to a negative value.
-            /*
+            
             for (int i = numParticles; i < m_NumParticles; ++i)
             {
                 m_Particles[i].remainingLifetime = -1f;
             }
-            */
+            
 
-            //m_ParticleSystem.SetParticles(m_Particles, Math.Max(numParticles, m_NumParticles));
-            //m_NumParticles = numParticles;
+            m_ParticleSystem.SetParticles(m_Particles, Math.Max(numParticles, m_NumParticles));
+            m_NumParticles = numParticles;
         }
 
         void StopRender()
         {
             GetComponent<ARPointCloud>().enabled = false;
+            /*
             foreach (var kvp in m_Points)
             {
-                //SetParticlePosition(particleIndex++, kvp.Value);
-                GameObject terrainObject = Instantiate(terrainPrefab, kvp.Value, Quaternion.identity);
+                SetParticlePosition(particleIndex++, kvp.Value);
             }
+            */
+            m_Points.Clear();
         }
 
         public void ParticleRender()
         {
+            
             GetComponent<ARPointCloud>().enabled = false;
+
             foreach (var kvp in m_Points)
             {
                 ParticleSystem particle = Instantiate(particlePrefab, kvp.Value, Quaternion.identity);
                 particle.Play();
             }
+            //GetComponent<ARPointCloud>().enabled = false;
+
         }
 
         void Awake()
@@ -204,7 +229,7 @@ namespace UnityEngine.XR.ARFoundation
 
         int m_NumParticles;
 
-        Dictionary<ulong, Vector3> m_Points = new Dictionary<ulong, Vector3>();
+        public Dictionary<ulong, Vector3> m_Points = new Dictionary<ulong, Vector3>();
 
         Mesh mesh = new Mesh();
         List<Vector3> vertices = new List<Vector3>();

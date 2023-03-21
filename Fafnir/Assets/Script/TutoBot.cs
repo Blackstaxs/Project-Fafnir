@@ -11,8 +11,10 @@ using EnhancedTouch = UnityEngine.InputSystem.EnhancedTouch;
 public class TutoBot : MonoBehaviour
 {
     public TextMeshProUGUI textMeshPro;
-    public string[] Instructions;
-    private int currentIndex = 0;
+    public string[] WallText;
+    public string[] CloudText;
+    private int WallIndex = 0;
+    private int CloudIndex = 0;
     private bool TextOn = true;
     private GameObject Intro;
     private GameObject SessionAR;
@@ -79,9 +81,15 @@ public class TutoBot : MonoBehaviour
     }
     */
     
-    public void UpdateText()
+    public void UpdateWallText()
     {
-        textMeshPro.text = Instructions[currentIndex];
-        currentIndex = (currentIndex + 1) % Instructions.Length;
+        textMeshPro.text = WallText[WallIndex];
+        WallIndex = (WallIndex + 1) % WallText.Length;
+    }
+
+    public void UpdateCloudText()
+    {
+        textMeshPro.text = CloudText[CloudIndex];
+        CloudIndex = (CloudIndex + 1) % CloudText.Length;
     }
 }

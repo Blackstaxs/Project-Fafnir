@@ -45,6 +45,7 @@ public class SwitchPointCloudVisualizationMode : MonoBehaviour
     }
 
     StringBuilder m_StringBuilder = new StringBuilder();
+    StringBuilder m_PointNumber = new StringBuilder();
 
     void OnPointCloudsChanged(ARPointCloudChangedEventArgs eventArgs)
     {
@@ -71,6 +72,7 @@ public class SwitchPointCloudVisualizationMode : MonoBehaviour
                 if (visualizer)
                 {
                     m_StringBuilder.Append($"{visualizer.totalPointCount} total points");
+                    //m_PointNumber.Append($"{visualizer.totalPointCount} total points");
                 }
             }
         }

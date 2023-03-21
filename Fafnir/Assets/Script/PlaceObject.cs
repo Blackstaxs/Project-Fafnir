@@ -37,6 +37,8 @@ public class PlaceObject : MonoBehaviour
     public GameObject IntroText;
     public GameObject ResetButton;
     public GameObject PlaneButton;
+    public GameObject CloudScanButton;
+    public GameObject AttackButton;
     private GameObject ScanBot;
     private GameObject Point1;
     public Transform target; // The target object to look at
@@ -57,6 +59,8 @@ public class PlaceObject : MonoBehaviour
     {
         ResetButton.SetActive(false);
         PlaneButton.SetActive(false);
+        CloudScanButton.SetActive(false);
+        AttackButton.SetActive(true);
         //aRRaycastManager = GetComponent<ARRaycastManager>();
         //aRPlaneManager = GetComponent<ARPlaneManager>();
     }
@@ -104,7 +108,7 @@ public class PlaceObject : MonoBehaviour
 
         if(Phasecheck == 1) //Bot Instructions
         {
-            ScanBot.GetComponent<TutoBot>().UpdateText();
+            ScanBot.GetComponent<TutoBot>().UpdateWallText();
             currentIndex += 1;
 
             if(currentIndex >= 5)
@@ -135,7 +139,7 @@ public class PlaceObject : MonoBehaviour
                     CreateWall(points[2].transform.position, points[3].transform.position);
                     CreateWall(points[3].transform.position, points[0].transform.position);
                     //SaveRoom();
-
+                    currentIndex = 0;
                     Phasecheck = 3;
 
                 }
@@ -144,23 +148,31 @@ public class PlaceObject : MonoBehaviour
 
         if (Phasecheck == 3) //Test
         {
-            ScanBot.GetComponent<TutoBot>().UpdateText();
-            currentIndex += 1;
             foreach (var plane in aRPlaneManager.trackables)
             {
                 plane.gameObject.SetActive(false);
                 //Destroy(plane.gameObject);
 
             }
+
             aRPlaneManager.enabled = false;
 
-            Phasecheck = 4;
+            ScanBot.GetComponent<TutoBot>().UpdateCloudText();
+            currentIndex += 1;
+
+            if (currentIndex >= 5)
+            {
+                Phasecheck = 4;
+            }
+            
         }
 
         if (Phasecheck == 4) //Point Cloud Scan
         {
             aRPointCloudManager.enabled = true;
             SessionAR.GetComponent<SwitchPointCloudVisualizationMode>().enabled = true;
+            SessionAR.GetComponent<TerrainGenerator>().enabled = true;
+            CloudScanButton.SetActive(true);
         }
     }
 
