@@ -45,9 +45,13 @@ public class PlaceObject : MonoBehaviour
     private int Phasecheck = 0;
     private int currentIndex = 0;
 
+    //limit points
     private List<GameObject> points = new List<GameObject>();
     static List<ARRaycastHit> hits = new List<ARRaycastHit>();
     private bool DetectionOn = false;
+
+    //all Points Scanned
+    public Dictionary<ulong, Vector3> SavedPoints = new Dictionary<ulong, Vector3>();
 
 
     public List<Vector3> DetectedPlanePositions
@@ -98,15 +102,15 @@ public class PlaceObject : MonoBehaviour
                     foreach (var plane in aRPlaneManager.trackables)
                     {
                         plane.gameObject.SetActive(false);
-                        //Destroy(plane.gameObject);
                     }
+
                     IntroOff();
                     Phasecheck = 1;
                 }
             }
         }
 
-        if(Phasecheck == 1) //Bot Instructions
+        if(Phasecheck == 1) //Instructions walls
         {
             ScanBot.GetComponent<TutoBot>().UpdateWallText();
             currentIndex += 1;
@@ -128,17 +132,19 @@ public class PlaceObject : MonoBehaviour
 
                 if (points.Count == 2)
                 {
-                    CreateWall(points[0].transform.position, points[1].transform.position);
+                    //CreateWall(points[0].transform.position, points[1].transform.position);
                 }
                 if (points.Count == 3)
                 {
-                    CreateWall(points[1].transform.position, points[2].transform.position);
+                    //CreateWall(points[1].transform.position, points[2].transform.position);
+                    
                 }
                 if (points.Count == 4)
                 {
-                    CreateWall(points[2].transform.position, points[3].transform.position);
-                    CreateWall(points[3].transform.position, points[0].transform.position);
+                    //CreateWall(points[2].transform.position, points[3].transform.position);
+                    //CreateWall(points[3].transform.position, points[0].transform.position);
                     //SaveRoom();
+                    CreateRectangle(points[0].transform.position, points[1].transform.position, points[2].transform.position, points[3].transform.position);
                     currentIndex = 0;
                     Phasecheck = 3;
 
@@ -146,13 +152,12 @@ public class PlaceObject : MonoBehaviour
             }
         }
 
-        if (Phasecheck == 3) //Test
+        if (Phasecheck == 3) //Instructions scan
         {
             foreach (var plane in aRPlaneManager.trackables)
             {
                 plane.gameObject.SetActive(false);
                 //Destroy(plane.gameObject);
-
             }
 
             aRPlaneManager.enabled = false;
@@ -234,6 +239,21 @@ public class PlaceObject : MonoBehaviour
         PlaneButton.SetActive(true);
     }
 
+    public void Spawntest()
+    {
+        if(SavedPoints != null)
+        {
+            //SavedPoints.Clear
+            RemovePointsOutsideArea();
+            foreach (var kvp in SavedPoints)
+            {
+                //ParticleSystem particle = Instantiate(particlePrefab, kvp.Value, Quaternion.identity);
+                //particle.Play();
+                GameObject newPoint = Instantiate(WallEdge, kvp.Value, Quaternion.identity);
+            }
+        }
+    }
+
     public void ResetPlanes()
     {
         foreach (var plane in aRPlaneManager.trackables)
@@ -272,5 +292,77 @@ public class PlaceObject : MonoBehaviour
         {
             newPlatform.AddComponent<ARAnchor>();
         }
+    }
+
+    private void RemovePointsOutsideArea()
+    {
+        List<ulong> keysToRemove = new List<ulong>();
+
+        foreach (KeyValuePair<ulong, Vector3> savedPoint in SavedPoints)
+        {
+            if (!IsPointInsideArea(savedPoint.Value))
+            {
+                keysToRemove.Add(savedPoint.Key);
+            }
+        }
+
+        foreach (ulong key in keysToRemove)
+        {
+            SavedPoints.Remove(key);
+        }
+    }
+
+    private bool IsPointInsideArea(Vector3 point)
+    {
+        // use a polygon intersection algorithm to check if the point is inside the area
+        bool inside = false;
+
+        for (int i = 0, j = points.Count - 1; i < points.Count; j = i++)
+        {
+            if (((points[i].transform.position.z <= point.z && point.z < points[j].transform.position.z) ||
+                 (points[j].transform.position.z <= point.z && point.z < points[i].transform.position.z)) &&
+                (point.x < (points[j].transform.position.x - points[i].transform.position.x) * (point.z - points[i].transform.position.z) /
+                 (points[j].transform.position.z - points[i].transform.position.z) + points[i].transform.position.x))
+            {
+                inside = !inside;
+            }
+        }
+
+        return inside;
+    }
+
+    private void CreateRectangle(Vector3 point1, Vector3 point2, Vector3 point3, Vector3 point4)
+    {
+        Vector3 point3Adjusted = GetAdjustedPoint(point2, point1, point3);
+        Vector3 point4Adjusted = GetAdjustedPoint(point1, point2, point4);
+
+        // Check if point4Adjusted is perpendicular to both point3Adjusted and point2
+        Vector3 v1 = (point3Adjusted - point2).normalized;
+        Vector3 v2 = (point4Adjusted - point3Adjusted).normalized;
+
+        /*
+        if (Vector3.Dot(v1, v2) != 0)
+        {
+            Vector3 perpendicular = Vector3.Cross(v1, v2);
+            float angle = Vector3.Angle(v1, perpendicular);
+            point4Adjusted = Quaternion.AngleAxis(angle, Vector3.up) * (point3Adjusted - point2) + point3Adjusted;
+        }
+        */
+
+        CreateWall(point1, point2);
+        CreateWall(point1, point3Adjusted);
+        CreateWall(point3Adjusted, point4Adjusted);
+        CreateWall(point4Adjusted, point2);
+
+        //update points adjusted
+    }
+
+    private Vector3 GetAdjustedPoint(Vector3 point1, Vector3 point2, Vector3 point3)
+    {
+        Vector3 dir = point2 - point1;
+        Vector3 ortho = new Vector3(-dir.z, 0f, dir.x).normalized;
+
+        float dot = Vector3.Dot(ortho, point3 - point2);
+        return point2 + ortho * dot;
     }
 }

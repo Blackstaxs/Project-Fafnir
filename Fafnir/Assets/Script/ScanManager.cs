@@ -25,8 +25,8 @@ public class ScanManager : MonoBehaviour
 
     //Tutorial Bot
     public string[] Instructions;
-    private int currentIndex = 0;
-    private bool TextOn = true;
+    //private int currentIndex = 0;
+    //private bool TextOn = true;
     public TextMeshProUGUI textMeshPro;
     private string BotTextmesh;
 

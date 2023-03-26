@@ -87,13 +87,12 @@ namespace UnityEngine.XR.ARFoundation
             var positions = m_PointCloud.positions.Value;
 
             // Store all the positions over time associated with their unique identifiers
-            if (m_PointCloud.identifiers.HasValue)
+            if ((m_PointCloud.identifiers.HasValue) && (ScanOn == true))
             {
                 var identifiers = m_PointCloud.identifiers.Value;
                 for (int i = 0; i < positions.Length; ++i)
                 {
                     m_Points[identifiers[i]] = positions[i];
-                    //GameObject terrainObject = Instantiate(terrainPrefab, positions[i], Quaternion.identity);
                 }
             }
 
@@ -109,37 +108,29 @@ namespace UnityEngine.XR.ARFoundation
                 case Mode.All:
                 {
                     // Draw all the particles
+                    /*
                     int particleIndex = 0;
                     foreach (var kvp in m_Points)
                     {
                         SetParticlePosition(particleIndex++, kvp.Value);
                     }
+                    */
                     break;
                 }
                 case Mode.CurrentFrame:
                 {
-                    StopRender();
+                    //StopRender();
+                    TrimPoints();
 
+                    /*
                     // Only draw the particles in the current frame
                     for (int i = 0; i < positions.Length; ++i)
                     {
                         //added for clear
                         SetParticlered(i, positions[i]);
-                        //SetParticlePosition(i, positions[i]);
                     }
-                    
-
-                    
-                    //ParticleRender();
-                    
-                    /*
-                    int particleIndex = 0;
-                    foreach (var kvp in m_Points)
-                    {
-                        SetParticleRed(particleIndex++, kvp.Value);
-                    }
-                    
                     */
+
                     break;
                 }
             }
@@ -153,8 +144,8 @@ namespace UnityEngine.XR.ARFoundation
             }
             
 
-            m_ParticleSystem.SetParticles(m_Particles, Math.Max(numParticles, m_NumParticles));
-            m_NumParticles = numParticles;
+            //m_ParticleSystem.SetParticles(m_Particles, Math.Max(numParticles, m_NumParticles));
+            //m_NumParticles = numParticles;
         }
 
         void StopRender()
@@ -179,7 +170,30 @@ namespace UnityEngine.XR.ARFoundation
                 ParticleSystem particle = Instantiate(particlePrefab, kvp.Value, Quaternion.identity);
                 particle.Play();
             }
+
+            
+            
+            for (int i = 0; i < m_Particles.Length; ++i)
+            {
+                m_Particles[i].remainingLifetime = -1f;
+            }
             //GetComponent<ARPointCloud>().enabled = false;
+
+        }
+
+        public void TrimPoints()
+        {
+            ScanOn = false;
+            GetComponent<ARPointCloud>().enabled = false;
+            foreach (var kvp in m_Points)
+            {
+                ParticleSystem particle = Instantiate(particlePrefab, kvp.Value, Quaternion.identity);
+                particle.Play();
+            }
+
+            GameObject.Find("Intro").GetComponent<PlaceObject>().SavedPoints = m_Points;
+
+            //m_Points.Clear();
 
         }
 
@@ -228,6 +242,8 @@ namespace UnityEngine.XR.ARFoundation
         ParticleSystem.Particle[] m_Particles;
 
         int m_NumParticles;
+
+        bool ScanOn = true;
 
         public Dictionary<ulong, Vector3> m_Points = new Dictionary<ulong, Vector3>();
 

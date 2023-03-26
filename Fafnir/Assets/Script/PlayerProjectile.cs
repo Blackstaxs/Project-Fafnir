@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TouchPhase = UnityEngine.TouchPhase;
 
 public class PlayerProjectile : MonoBehaviour
 {
@@ -13,15 +14,53 @@ public class PlayerProjectile : MonoBehaviour
     protected InputAction m_PressAction;
 
     [SerializeField]
-    Rigidbody m_ProjectilePrefab;
+    Rigidbody m_Projectile1;
+
+    [SerializeField]
+    Rigidbody m_Projectile2;
+
+    [SerializeField]
+    Rigidbody m_Projectile3;
+
+    [SerializeField]
+    Rigidbody m_Projectile4;
 
     [SerializeField]
     GameObject ArCamera;
 
-    public Rigidbody projectilePrefab
+    //switch weapon
+    private Vector2 StartPosition;
+    private Vector2 CurrentPosition;
+    private Vector2 EndPosition;
+    public int AttackNumber = 1;
+    private bool stopTouch = false;
+    public float swipeRange;
+    public float tapRange;
+
+
+
+    public Rigidbody projectile1
     {
-        get => m_ProjectilePrefab;
-        set => m_ProjectilePrefab = value;
+        get => m_Projectile1;
+        set => m_Projectile1 = value;
+    }
+
+    public Rigidbody projectile2
+    {
+        get => m_Projectile2;
+        set => m_Projectile2 = value;
+    }
+
+    public Rigidbody projectile3
+    {
+        get => m_Projectile3;
+        set => m_Projectile3 = value;
+    }
+
+    public Rigidbody projectile4
+    {
+        get => m_Projectile4;
+        set => m_Projectile4 = value;
     }
 
     [SerializeField]
@@ -39,6 +78,7 @@ public class PlayerProjectile : MonoBehaviour
 
     protected virtual void Awake()
     {
+
         m_PressAction = new InputAction("touch", binding: "<Pointer>/press");
 
         m_PressAction.started += ctx =>
@@ -78,34 +118,99 @@ public class PlayerProjectile : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        /*
-        if(Input.touchCount > 0 && Input.GetTouch(0).phase ==TouchPhase.Began)
-        {
-            GameObject bullet = Instantiate(playerProjectile, ArCamera.position, ArCamera.rotation);
-            bullet.GetComponent<Rigidbody>().AddForce(ArCamera.forward * shootForce);
-        }
-        */
+        
     }
 
-    public void attackTest()
-    {
-        //GameObject bullet = Instantiate(playerProjectile, ArCamera.position, ArCamera.rotation);
-        //bullet.GetComponent<Rigidbody>().AddForce(ArCamera.forward * shootForce);
-    }
+    public void attackTest(){ }
 
     protected virtual void OnPress(Vector3 position) { }
 
     public void OnPressBegan(Vector3 position)
     {
-        if (m_ProjectilePrefab == null)
-            return;
+        //if (m_ProjectilePrefab == null)
+        //    return;
+        if(AttackNumber == 1)
+        {
+            var ray = ArCamera.GetComponent<Camera>().ScreenPointToRay(position);
+            var projectile = Instantiate(m_Projectile1, ray.origin, Quaternion.identity);
+            var rigidbody = projectile.GetComponent<Rigidbody>();
+            rigidbody.velocity = ray.direction * m_InitialSpeed;
+        }
 
-        var ray = ArCamera.GetComponent<Camera>().ScreenPointToRay(position);
-        var projectile = Instantiate(m_ProjectilePrefab, ray.origin, Quaternion.identity);
-        var rigidbody = projectile.GetComponent<Rigidbody>();
-        rigidbody.velocity = ray.direction * m_InitialSpeed;
+        if (AttackNumber == 2)
+        {
+            var ray = ArCamera.GetComponent<Camera>().ScreenPointToRay(position);
+            var projectile = Instantiate(m_Projectile2, ray.origin, Quaternion.identity);
+            var rigidbody = projectile.GetComponent<Rigidbody>();
+            rigidbody.velocity = ray.direction * m_InitialSpeed;
+        }
 
+        if (AttackNumber == 3)
+        {
+            var ray = ArCamera.GetComponent<Camera>().ScreenPointToRay(position);
+            var projectile = Instantiate(m_Projectile3, ray.origin, Quaternion.identity);
+            var rigidbody = projectile.GetComponent<Rigidbody>();
+            rigidbody.velocity = ray.direction * m_InitialSpeed;
+        }
+
+        if (AttackNumber == 4)
+        {
+            var ray = ArCamera.GetComponent<Camera>().ScreenPointToRay(position);
+            var projectile = Instantiate(m_Projectile4, ray.origin, Quaternion.identity);
+            var rigidbody = projectile.GetComponent<Rigidbody>();
+            rigidbody.velocity = ray.direction * m_InitialSpeed;
+        }
     }
 
     protected virtual void OnPressCancel() { }
+
+    /*
+    public void Swiping()
+    {
+        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+        {
+            StartPosition = Input.GetTouch(0).position;
+        }
+
+        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
+        {
+            CurrentPosition = Input.GetTouch(0).position;
+            Vector2 Distance = CurrentPosition - StartPosition;
+
+            if (!stopTouch)
+            {
+                if (Distance.x < -swipeRange)
+                {
+                    //PLayer.GetComponent<Player>().Dash();
+                    AttackNumber = 1;
+                    stopTouch = true;
+                }
+                else if (Distance.x > swipeRange)
+                {
+                    //PLayer.GetComponent<Player>().Dash();
+                    AttackNumber = 2;
+                    stopTouch = true;
+                }
+                else if (Distance.y > swipeRange)
+                {
+                    //PLayer.GetComponent<Player>().Dash();
+                    AttackNumber = 3;
+                    stopTouch = true;
+                }
+                else if (Distance.y < -swipeRange)
+                {
+                    //PLayer.GetComponent<Player>().Dash();
+                    AttackNumber = 4;
+                    stopTouch = true;
+                }
+            }
+        }
+
+        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended)
+        {
+            stopTouch = false;
+            EndPosition = Input.GetTouch(0).position;
+        }
+    }
+    */
 }
