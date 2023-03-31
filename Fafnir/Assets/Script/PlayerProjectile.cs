@@ -131,6 +131,7 @@ public class PlayerProjectile : MonoBehaviour
         //    return;
         if(AttackNumber == 1)
         {
+            m_InitialSpeed = 7;
             var ray = ArCamera.GetComponent<Camera>().ScreenPointToRay(position);
             var projectile = Instantiate(m_Projectile1, ray.origin, Quaternion.identity);
             var rigidbody = projectile.GetComponent<Rigidbody>();
@@ -139,6 +140,7 @@ public class PlayerProjectile : MonoBehaviour
 
         if (AttackNumber == 2)
         {
+            m_InitialSpeed = 12;
             var ray = ArCamera.GetComponent<Camera>().ScreenPointToRay(position);
             var projectile = Instantiate(m_Projectile2, ray.origin, Quaternion.identity);
             var rigidbody = projectile.GetComponent<Rigidbody>();
@@ -147,6 +149,7 @@ public class PlayerProjectile : MonoBehaviour
 
         if (AttackNumber == 3)
         {
+            m_InitialSpeed = 10;
             var ray = ArCamera.GetComponent<Camera>().ScreenPointToRay(position);
             var projectile = Instantiate(m_Projectile3, ray.origin, Quaternion.identity);
             var rigidbody = projectile.GetComponent<Rigidbody>();
@@ -155,6 +158,7 @@ public class PlayerProjectile : MonoBehaviour
 
         if (AttackNumber == 4)
         {
+            m_InitialSpeed = 5;
             var ray = ArCamera.GetComponent<Camera>().ScreenPointToRay(position);
             var projectile = Instantiate(m_Projectile4, ray.origin, Quaternion.identity);
             var rigidbody = projectile.GetComponent<Rigidbody>();

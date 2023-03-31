@@ -120,9 +120,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textMeshPro: {fileID: 306154954216512478}
   WallText:
-  - ' Hi'
-  - Before the simulation can start
-  - I need you to do 2 things for me
+  - ' Hi MariaEduarda!'
+  - 'Simulation requirements:'
+  - First
   - Place 4 markers on the floor for the limits
   - Come back to me after :)
   - Waiting .
@@ -132,10 +132,14 @@ MonoBehaviour:
   - Second Step
   - Inside the are that you made
   - 'Move your camera around to scan the room '
-  - Click the button when the points are above 1k
+  - Click the button when you are done
   - and come back to me again =>_<=
   - waiting .
   - waiting . .
+  - waiting . . .
+  EndScanText:
+  - 'Confirmation step:'
+  - Swipe <- to restart scan or -> to start simulation
   - waiting . . .
   pointPrefab: {fileID: 2345112895893280787, guid: 747e90efaae698f48b3c2bc8b317f3cd, type: 3}
 --- !u!4 &1069864365572846928 stripped

@@ -7,6 +7,8 @@ using UnityEngine.InputSystem.EnhancedTouch;
 using EnhancedTouch = UnityEngine.InputSystem.EnhancedTouch;
 using TMPro;
 using UnityEngine.UI;
+using System.Linq;
+using System;
 
 [RequireComponent(typeof(ARRaycastManager), typeof(ARPlaneManager))]
 public class PlaceObject : MonoBehaviour
@@ -19,6 +21,9 @@ public class PlaceObject : MonoBehaviour
 
     [SerializeField]
     private GameObject wallPrefab;
+
+    [SerializeField]
+    private GameObject floorPrefab;
 
     [SerializeField]
     private ARRaycastManager aRRaycastManager;
@@ -35,6 +40,7 @@ public class PlaceObject : MonoBehaviour
     //private List<ARRaycastHit> hits = new List<ARRaycastHit>();
     private List<Vector3> detectedPlanePositions = new List<Vector3>();
     public GameObject IntroText;
+    public GameObject LogText;
     public GameObject ResetButton;
     public GameObject PlaneButton;
     public GameObject CloudScanButton;
@@ -47,6 +53,7 @@ public class PlaceObject : MonoBehaviour
 
     //limit points
     private List<GameObject> points = new List<GameObject>();
+    private List<Vector3> pointsPositions = new List<Vector3>();
     static List<ARRaycastHit> hits = new List<ARRaycastHit>();
     private bool DetectionOn = false;
 
@@ -64,7 +71,7 @@ public class PlaceObject : MonoBehaviour
         ResetButton.SetActive(false);
         PlaneButton.SetActive(false);
         CloudScanButton.SetActive(false);
-        AttackButton.SetActive(true);
+        AttackButton.SetActive(false);
         //aRRaycastManager = GetComponent<ARRaycastManager>();
         //aRPlaneManager = GetComponent<ARPlaneManager>();
     }
@@ -141,9 +148,6 @@ public class PlaceObject : MonoBehaviour
                 }
                 if (points.Count == 4)
                 {
-                    //CreateWall(points[2].transform.position, points[3].transform.position);
-                    //CreateWall(points[3].transform.position, points[0].transform.position);
-                    //SaveRoom();
                     CreateRectangle(points[0].transform.position, points[1].transform.position, points[2].transform.position, points[3].transform.position);
                     currentIndex = 0;
                     Phasecheck = 3;
@@ -157,7 +161,6 @@ public class PlaceObject : MonoBehaviour
             foreach (var plane in aRPlaneManager.trackables)
             {
                 plane.gameObject.SetActive(false);
-                //Destroy(plane.gameObject);
             }
 
             aRPlaneManager.enabled = false;
@@ -178,6 +181,19 @@ public class PlaceObject : MonoBehaviour
             SessionAR.GetComponent<SwitchPointCloudVisualizationMode>().enabled = true;
             SessionAR.GetComponent<TerrainGenerator>().enabled = true;
             CloudScanButton.SetActive(true);
+        }
+
+        if (Phasecheck == 5) //Confirmation step
+        {
+            ScanBot.GetComponent<TutoBot>().UpdateConfirmationText();
+            currentIndex += 1;
+
+            if (currentIndex >= 2)
+            {
+                Phasecheck = 6;
+                GetComponent<SwipeDetection>().isDetectOn = true;
+                GetComponent<SwipeDetection>().introEnd = true;
+            }
         }
     }
 
@@ -239,6 +255,12 @@ public class PlaceObject : MonoBehaviour
         PlaneButton.SetActive(true);
     }
 
+    public void EndScan()
+    {
+        CloudScanButton.SetActive(false);
+
+    }
+    
     public void Spawntest()
     {
         if(SavedPoints != null)
@@ -250,6 +272,11 @@ public class PlaceObject : MonoBehaviour
                 //ParticleSystem particle = Instantiate(particlePrefab, kvp.Value, Quaternion.identity);
                 //particle.Play();
                 GameObject newPoint = Instantiate(WallEdge, kvp.Value, Quaternion.identity);
+            }
+
+            foreach (GameObject point in points)
+            {
+                point.SetActive(false);
             }
         }
     }
@@ -294,7 +321,7 @@ public class PlaceObject : MonoBehaviour
         }
     }
 
-    private void RemovePointsOutsideArea()
+    public void RemovePointsOutsideArea()
     {
         List<ulong> keysToRemove = new List<ulong>();
 
@@ -310,6 +337,15 @@ public class PlaceObject : MonoBehaviour
         {
             SavedPoints.Remove(key);
         }
+
+        foreach (GameObject point in points)
+        {
+            point.SetActive(false);
+        }
+        EndScan();
+        LogText.SetActive(false);
+        currentIndex = 0;
+        Phasecheck = 5;
     }
 
     private bool IsPointInsideArea(Vector3 point)
@@ -317,12 +353,12 @@ public class PlaceObject : MonoBehaviour
         // use a polygon intersection algorithm to check if the point is inside the area
         bool inside = false;
 
-        for (int i = 0, j = points.Count - 1; i < points.Count; j = i++)
+        for (int i = 0, j = pointsPositions.Count - 1; i < pointsPositions.Count; j = i++)
         {
-            if (((points[i].transform.position.z <= point.z && point.z < points[j].transform.position.z) ||
-                 (points[j].transform.position.z <= point.z && point.z < points[i].transform.position.z)) &&
-                (point.x < (points[j].transform.position.x - points[i].transform.position.x) * (point.z - points[i].transform.position.z) /
-                 (points[j].transform.position.z - points[i].transform.position.z) + points[i].transform.position.x))
+            if (((pointsPositions[i].z <= point.z && point.z < pointsPositions[j].z) ||
+                 (pointsPositions[j].z <= point.z && point.z < pointsPositions[i].z)) &&
+                (point.x < (pointsPositions[j].x - pointsPositions[i].x) * (point.z - pointsPositions[i].z) /
+                 (pointsPositions[j].z - pointsPositions[i].z) + pointsPositions[i].x))
             {
                 inside = !inside;
             }
@@ -353,6 +389,11 @@ public class PlaceObject : MonoBehaviour
         CreateWall(point1, point3Adjusted);
         CreateWall(point3Adjusted, point4Adjusted);
         CreateWall(point4Adjusted, point2);
+
+        pointsPositions.Add(point1);
+        pointsPositions.Add(point2);
+        pointsPositions.Add(point3Adjusted);
+        pointsPositions.Add(point4Adjusted);
 
         //update points adjusted
     }

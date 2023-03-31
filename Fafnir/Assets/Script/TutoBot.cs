@@ -13,8 +13,10 @@ public class TutoBot : MonoBehaviour
     public TextMeshProUGUI textMeshPro;
     public string[] WallText;
     public string[] CloudText;
+    public string[] EndScanText;
     private int WallIndex = 0;
     private int CloudIndex = 0;
+    private int ConfirmationIndex = 0;
     private bool TextOn = true;
     private GameObject Intro;
     private GameObject SessionAR;
@@ -91,5 +93,11 @@ public class TutoBot : MonoBehaviour
     {
         textMeshPro.text = CloudText[CloudIndex];
         CloudIndex = (CloudIndex + 1) % CloudText.Length;
+    }
+
+    public void UpdateConfirmationText()
+    {
+        textMeshPro.text = EndScanText[ConfirmationIndex];
+        ConfirmationIndex = (ConfirmationIndex + 1) % EndScanText.Length;
     }
 }

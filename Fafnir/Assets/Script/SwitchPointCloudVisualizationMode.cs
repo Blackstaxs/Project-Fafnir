@@ -91,7 +91,7 @@ public class SwitchPointCloudVisualizationMode : MonoBehaviour
             switch (mode)
             {
                 case ARAllPointCloudPointsParticleVisualizer.Mode.All:
-                    text.text = "All";
+                    text.text = "Done";
                     break;
                 case ARAllPointCloudPointsParticleVisualizer.Mode.CurrentFrame:
                     text.text = "Current Frame";
