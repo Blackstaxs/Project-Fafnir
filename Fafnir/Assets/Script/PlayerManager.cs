@@ -28,6 +28,11 @@ public class PlayerManager : MonoBehaviour
         return instance.player.transform.position;
     }
 
+    public Vector3 GetObjectPosition()
+    {
+        return instance.player.gameObject.transform.position;
+    }
+
     public void TakeDamage()
     {
         if(CurrentDamage <= 100) 

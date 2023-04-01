@@ -110,7 +110,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed1ecdd15cb59ad4e8b33e316dfc3164, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectilePrefab: {fileID: 2345112895893280787, guid: cbea25c1b5f5fdc4f87d8f66a2a63a56, type: 3}
+  projectilePrefab: {fileID: 2345112895893280787, guid: de0fe616573403e47946d0319394ba5b, type: 3}
   projectileForce: 4
 --- !u!1 &6225091370735392038
 GameObject:

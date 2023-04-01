@@ -8,8 +8,6 @@ public class LevelStart : MonoBehaviour
     public GameObject enemyPrefab;
     //all Points Scanned
     public Dictionary<ulong, Vector3> SavedPoints = new Dictionary<ulong, Vector3>();
-    private Vector3 playerPosition;
-    private Vector3 projectileDirection;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,12 +23,7 @@ public class LevelStart : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        playerPosition = PlayerManager.instance.GetPlayerPosition();
-        projectileDirection = (playerPosition - transform.position).normalized;
-        projectileDirection.y = 0;
-
-        // Rotate this object to face the target direction
-        transform.rotation = Quaternion.LookRotation(projectileDirection, Vector3.up);
+     
     }
 
     public void SpawnRandomObject()

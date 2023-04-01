@@ -347,7 +347,7 @@ public class PlaceObject : MonoBehaviour
         currentIndex = 0;
         Phasecheck = 5;
     }
-
+    /*
     private bool IsPointInsideArea(Vector3 point)
     {
         // use a polygon intersection algorithm to check if the point is inside the area
@@ -361,6 +361,30 @@ public class PlaceObject : MonoBehaviour
                  (pointsPositions[j].z - pointsPositions[i].z) + pointsPositions[i].x))
             {
                 inside = !inside;
+            }
+        }
+
+        return inside;
+    }
+    */
+
+    private bool IsPointInsideArea(Vector3 point)
+    {
+        // use a polygon intersection algorithm to check if the point is inside the area
+        bool inside = false;
+
+        for (int i = 0, j = pointsPositions.Count - 1; i < pointsPositions.Count; j = i++)
+        {
+            // Check if the point is not on the same line as the limits
+            if (Mathf.Abs(pointsPositions[j].z - pointsPositions[i].z) > 0.0001f)
+            {
+                if (((pointsPositions[i].z <= point.z && point.z < pointsPositions[j].z) ||
+                     (pointsPositions[j].z <= point.z && point.z < pointsPositions[i].z)) &&
+                    (point.x < (pointsPositions[j].x - pointsPositions[i].x) * (point.z - pointsPositions[i].z) /
+                     (pointsPositions[j].z - pointsPositions[i].z) + pointsPositions[i].x))
+                {
+                    inside = !inside;
+                }
             }
         }
 
