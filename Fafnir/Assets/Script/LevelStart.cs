@@ -5,13 +5,23 @@ using UnityEngine.UI;
 
 public class LevelStart : MonoBehaviour
 {
-    public GameObject enemyPrefab;
+    public GameObject enemyRed;
+    public GameObject enemyBlue;
+    public GameObject enemyGreen;
+    public GameObject enemyYellow;
+
     //all Points Scanned
     public Dictionary<ulong, Vector3> SavedPoints = new Dictionary<ulong, Vector3>();
+    public List<ulong> usedPoints = new List<ulong>();
     // Start is called before the first frame update
     void Start()
     {
-        Invoke("SpawnRandomObject", 2f);
+        //Invoke("SpawnRandomObject", 2f);
+        SpawnRandomObject(enemyRed);
+        SpawnRandomObject(enemyBlue);
+        SpawnRandomObject(enemyGreen);
+        SpawnRandomObject(enemyYellow);
+        usedPoints.Clear();
     }
 
     private void Awake()
@@ -26,16 +36,24 @@ public class LevelStart : MonoBehaviour
      
     }
 
-    public void SpawnRandomObject()
+    public void SpawnRandomObject(GameObject enemyprefab)
     {
         // Get a random key from the dictionary
         List<ulong> keys = new List<ulong>(SavedPoints.Keys);
+        
         ulong randomKey = keys[Random.Range(0, keys.Count)];
+
+        while (usedPoints.Contains(randomKey))
+        {
+            randomKey = keys[Random.Range(0, keys.Count)];
+        }
+
+        usedPoints.Add(randomKey);
 
         // Get the position associated with the random key
         Vector3 randomPosition = SavedPoints[randomKey];
 
         // Instantiate the prefab at the random position
-        Instantiate(enemyPrefab, randomPosition, Quaternion.identity);
+        Instantiate(enemyprefab, randomPosition, Quaternion.identity);
     }
 }

@@ -7,6 +7,7 @@ public class PlayerManager : MonoBehaviour
 {
     public static PlayerManager instance;
     public GameObject player;
+    public Dictionary<ulong, Vector3> SavedPoints = new Dictionary<ulong, Vector3>();
     private int CurrentDamage = 0;
     public Text ErrorDamage;
 
@@ -26,6 +27,11 @@ public class PlayerManager : MonoBehaviour
     public Vector3 GetPlayerPosition()
     {
         return instance.player.transform.position;
+    }
+
+    public Dictionary<ulong, Vector3> GetSavedPoints()
+    {
+        return SavedPoints;
     }
 
     public Vector3 GetObjectPosition()

@@ -802,8 +802,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 807db1dc70efe4548890f49627e47fef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isYellow: 0
+  isRed: 1
+  isBlue: 0
+  isGreen: 0
   projectilePrefab: {fileID: 2345112895893280787, guid: cbea25c1b5f5fdc4f87d8f66a2a63a56, type: 3}
-  projectileForce: 0.1
 --- !u!65 &8510395184623049452
 BoxCollider:
   m_ObjectHideFlags: 0

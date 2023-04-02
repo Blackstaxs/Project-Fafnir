@@ -507,7 +507,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cd3bfc4cf6bdd84fb8e7dd247dd60b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 1903400983757000, guid: 54a5f2f7d618ccf46978c4adaa0f5033, type: 3}
+  enemyRed: {fileID: 1903400983757000, guid: 54a5f2f7d618ccf46978c4adaa0f5033, type: 3}
+  enemyBlue: {fileID: 1508817308227530, guid: ee3f2e20df36ab2489d75e17b51f9e5c, type: 3}
+  enemyGreen: {fileID: 1864840046505020, guid: 95e136fa57c9a1749ad98df5de6db7a3, type: 3}
+  enemyYellow: {fileID: 1864840046505020, guid: e52e39e6247822a4f942644047091f18, type: 3}
+  usedPoints: 
 --- !u!1 &402117796
 GameObject:
   m_ObjectHideFlags: 0
@@ -1383,8 +1387,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -220, y: 0}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: -330, y: 0}
+  m_SizeDelta: {x: 330, y: 50}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &927847346
 MonoBehaviour:
@@ -1399,7 +1403,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0.06298876, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1408,7 +1412,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 19ecd568395677d498b8dd3cbfc47142, type: 3}
-    m_FontSize: 30
+    m_FontSize: 40
     m_FontStyle: 3
     m_BestFit: 0
     m_MinSize: 0

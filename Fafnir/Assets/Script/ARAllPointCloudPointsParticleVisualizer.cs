@@ -187,11 +187,12 @@ namespace UnityEngine.XR.ARFoundation
             GetComponent<ARPointCloud>().enabled = false;
             GameObject.Find("Intro").GetComponent<PlaceObject>().SavedPoints = m_Points;
             GameObject.Find("Intro").GetComponent<LevelStart>().SavedPoints = m_Points;
+            GameObject.Find("PlayerManager").GetComponent<PlayerManager>().SavedPoints = m_Points;
             GameObject.Find("Intro").GetComponent<PlaceObject>().RemovePointsOutsideArea();
             foreach (var kvp in m_Points)
             {
                 ParticleSystem particle = Instantiate(particlePrefab, kvp.Value, Quaternion.identity);
-                particle.Play();
+                particle.Play(); 
             }
             //m_Points.Clear();
         }
