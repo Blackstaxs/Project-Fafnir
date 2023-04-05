@@ -10,6 +10,7 @@ public class PlayerManager : MonoBehaviour
     public Dictionary<ulong, Vector3> SavedPoints = new Dictionary<ulong, Vector3>();
     private int CurrentDamage = 0;
     public Text ErrorDamage;
+    public GameObject Intro;
 
     private void Awake()
     {
@@ -51,5 +52,10 @@ public class PlayerManager : MonoBehaviour
     public void UpdateDamage()
     {
         ErrorDamage.text = "ERROR: " + CurrentDamage + "%";
+    }
+
+    public void EnemyDeath()
+    {
+        Intro.GetComponent<LevelStart>().minusEnemy();
     }
 }

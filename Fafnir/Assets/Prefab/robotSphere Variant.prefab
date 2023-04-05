@@ -120,7 +120,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textMeshPro: {fileID: 306154954216512478}
   WallText:
-  - ' Hi MariaEduarda!'
+  - ' Hi'
   - 'Simulation requirements:'
   - First
   - Place 4 markers on the floor for the limits
