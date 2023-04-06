@@ -27,6 +27,8 @@ public class PlayerProjectile : MonoBehaviour
 
     [SerializeField]
     GameObject ArCamera;
+    public AudioSource audioSource;
+    public AudioClip shootSound;
 
     //switch weapon
     private Vector2 StartPosition;
@@ -129,7 +131,9 @@ public class PlayerProjectile : MonoBehaviour
     {
         //if (m_ProjectilePrefab == null)
         //    return;
-        if(AttackNumber == 1)
+        PlayShootSound();
+
+        if (AttackNumber == 1)
         {
             m_InitialSpeed = 7;
             var ray = ArCamera.GetComponent<Camera>().ScreenPointToRay(position);
@@ -167,6 +171,11 @@ public class PlayerProjectile : MonoBehaviour
     }
 
     protected virtual void OnPressCancel() { }
+
+    private void PlayShootSound()
+    {
+        audioSource.PlayOneShot(shootSound);
+    }
 
     /*
     public void Swiping()

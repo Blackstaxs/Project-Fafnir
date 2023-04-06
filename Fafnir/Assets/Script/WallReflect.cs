@@ -29,5 +29,20 @@ public class WallReflect : MonoBehaviour
             projectileRb.AddForce(projectileDirection * projectileForce, ForceMode.Impulse);
 
         }
+
+        if (collision.gameObject.CompareTag("Fake"))
+        {
+            Vector3 playerPosition = PlayerManager.instance.GetPlayerPosition();
+            Vector3 contactPoint = collision.contacts[0].point;
+            Vector3 projectileDirection = (playerPosition - contactPoint).normalized;
+
+            // Add 1 unit in the direction of the player
+            Vector3 spawnPosition = contactPoint + projectileDirection * 1f;
+
+            GameObject projectileInstance = Instantiate(projectilePrefab, spawnPosition, Quaternion.identity);
+            Rigidbody projectileRb = projectileInstance.GetComponent<Rigidbody>();
+            projectileRb.AddForce(projectileDirection * projectileForce, ForceMode.Impulse);
+
+        }
     }
 }

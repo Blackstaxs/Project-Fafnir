@@ -9,6 +9,7 @@ TagManager:
   - Enemy
   - Right
   - Left
+  - Fake
   layers:
   - Default
   - TransparentFX

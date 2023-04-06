@@ -38,7 +38,13 @@ public class EnemyAI : MonoBehaviour
     public GameObject SpawnPoint2;
     public GameObject SpawnPoint3;
     public GameObject SpawnPoint4;
+    private float damageCheck;
     Dictionary<ulong, Vector3> savedPoints = new Dictionary<ulong, Vector3>();
+
+    public AudioSource audioSource;
+    public AudioClip DamageSound;
+    public AudioClip DeathSound;
+    private bool isDeath = false;
 
     // Start is called before the first frame update
     void Start()
@@ -47,26 +53,29 @@ public class EnemyAI : MonoBehaviour
         if(isRed)
         {
             JumpMove();
+            damageCheck = 1;
             InvokeRepeating("rangedAttack", 2f, 4f);
         }
 
-        if (isBlue)
+        else if(isBlue)
         {
+            damageCheck = 1.05f;
             InvokeRepeating("volleyAttack", 2f, 4f);
         }
 
-        if (isGreen)
+        else if(isGreen)
         {
             DoRandomJumpMove();
+            damageCheck = 0.95f;
             InvokeRepeating("rangedAttack", 2f, 4f);
         }
 
-        if (isYellow)
+        else if(isYellow)
         {
             RandomAirMove();
-            InvokeRepeating("volleyAttack", 2f, 4f);
+            damageCheck = 0.9f;
+            InvokeRepeating("rangedAttack360", 2f, 4f);
         }
-
     }
 
     private void Awake()
@@ -101,19 +110,19 @@ public class EnemyAI : MonoBehaviour
             CancelInvoke("rangedAttack");
         }
 
-        if (isBlue)
+        else if (isBlue)
         {
             CancelInvoke("volleyAttack");
         }
 
-        if (isGreen)
+        else if (isGreen)
         {
             CancelInvoke("rangedAttack");
         }
 
-        if (isYellow)
+        else if(isYellow)
         {
-            CancelInvoke("volleyAttack");
+            CancelInvoke("rangedAttack360");
         }
 
 
@@ -123,23 +132,33 @@ public class EnemyAI : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Projectile"))
+        Rigidbody collisionRigidbody = collision.gameObject.GetComponent<Rigidbody>();
+
+        if (collisionRigidbody.mass == damageCheck)
+        {
+            if (collision.gameObject.CompareTag("Projectile"))
         {
             float currentTime = Time.time;
-
             if (EnemyHp > 0 && (currentTime - lastDamageTime) >= damageCooldown)
             {
-                // Play the animation
                 animator.Play("Damage");
+                PlayDamageSound();
                 EnemyHp -= 5;
-                lastDamageTime = currentTime; // Update the last damage time
+                // Update the last damage time
+                lastDamageTime = currentTime;
             }
-            if (EnemyHp <= 0) 
+            else if (EnemyHp <= 0) 
             {
-                PlayerManager.instance.EnemyDeath();
-                animator.Play("Die");
-                StartCoroutine(SetInactiveAfterAnimation());
+                if(isDeath == false)
+                    {
+                        isDeath = true;
+                        PlayerManager.instance.EnemyDeath();
+                        PlayDeathSound();
+                        animator.Play("Die");
+                        StartCoroutine(SetInactiveAfterAnimation());
+                    }
             }
+        }
         }
     }
 
@@ -216,11 +235,6 @@ public class EnemyAI : MonoBehaviour
         // Get a random direction in which to spawn the projectiles
         Vector3 spawnDirection = Random.insideUnitSphere.normalized;
 
-        //Vector3 spawn1 = SpawnPoint1.transform.position + spawnDirection * 0.5f;
-        //Vector3 spawn2 = SpawnPoint2.transform.position + spawnDirection * 0.5f;
-        //Vector3 spawn3 = SpawnPoint3.transform.position + spawnDirection * 0.5f;
-        //Vector3 spawn4 = SpawnPoint4.transform.position + spawnDirection * 0.5f;
-
         InstAttack(SpawnPoint1.transform, spawnDirection);
         InstAttack(SpawnPoint2.transform, spawnDirection);
         InstAttack(SpawnPoint3.transform, spawnDirection);
@@ -254,5 +268,15 @@ public class EnemyAI : MonoBehaviour
         GameObject rightProjectileInstance = Instantiate(projectilePrefab, rightSpawnPosition, Quaternion.identity);
         Rigidbody rightProjectileRb = rightProjectileInstance.GetComponent<Rigidbody>();
         rightProjectileRb.AddForce(rightDirection * projectileForce, ForceMode.Impulse);
+    }
+
+    private void PlayDamageSound()
+    {
+        audioSource.PlayOneShot(DamageSound);
+    }
+
+    private void PlayDeathSound()
+    {
+        audioSource.PlayOneShot(DeathSound);
     }
 }

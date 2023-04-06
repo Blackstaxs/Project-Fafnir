@@ -58,4 +58,9 @@ public class PlayerManager : MonoBehaviour
     {
         Intro.GetComponent<LevelStart>().minusEnemy();
     }
+
+    public void EndGame()
+    {
+        Intro.GetComponent<PlaceObject>().askRetry();
+    }
 }

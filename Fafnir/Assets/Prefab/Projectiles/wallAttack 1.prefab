@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1680957366055833731}
   - component: {fileID: 2567503834770659322}
   - component: {fileID: -1652178700593843664}
-  - component: {fileID: 8048573493206329706}
+  - component: {fileID: -7119237874044387717}
   m_Layer: 0
   m_Name: wallAttack 1
   m_TagString: Enemy
@@ -115,7 +115,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 2
---- !u!114 &8048573493206329706
+--- !u!114 &-7119237874044387717
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -124,7 +124,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2345112895893280787}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc474f277e5d7d04f9650c8e56997fd8, type: 3}
+  m_Script: {fileID: 11500000, guid: d20c791b707f9d74ca314e40b15e6cc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   timeToInactive: 6

@@ -100,4 +100,9 @@ public class TutoBot : MonoBehaviour
         textMeshPro.text = EndScanText[ConfirmationIndex];
         ConfirmationIndex = (ConfirmationIndex + 1) % EndScanText.Length;
     }
+
+    public void RetryLevel()
+    {
+        textMeshPro.text = "Swipe right to Restart and Increase difficulty";
+    }
 }

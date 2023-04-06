@@ -430,4 +430,10 @@ public class PlaceObject : MonoBehaviour
         float dot = Vector3.Dot(ortho, point3 - point2);
         return point2 + ortho * dot;
     }
+
+    public void askRetry()
+    {
+        ScanBot.GetComponent<TutoBot>().RetryLevel();
+        GetComponent<SwipeDetection>().finishLevel = true;
+    }
 }

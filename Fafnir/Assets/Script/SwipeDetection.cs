@@ -13,9 +13,10 @@ public class SwipeDetection : MonoBehaviour
     public Text TestSwipe;
     public bool isDetectOn = false;
     public bool introEnd = false;
+    public bool finishLevel = false;
 
     [SerializeField] private InputAction position, press;
-	[SerializeField] private float swipeResistance = 10;
+	[SerializeField] private float swipeResistance = 40;
 
 	private Vector2 initialPos;
 	private Vector2 currentPos => position.ReadValue<Vector2>();
@@ -60,6 +61,11 @@ public class SwipeDetection : MonoBehaviour
                         GetComponent<PlayerProjectile>().enabled = true;
                         introEnd = false;
                     }
+                }
+                else if (finishLevel == true)
+                {
+                    GetComponent<LevelStart>().RestartGame();
+                    finishLevel= false;
                 }
                 GetComponent<PlayerProjectile>().AttackNumber = attack_number;
             }
